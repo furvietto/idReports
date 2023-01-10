@@ -23,5 +23,7 @@ public class EmployeeEnt {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPLOYEE_SEQ_GEN")
     private Integer id;
 
+    //ciao
+
 
 }
