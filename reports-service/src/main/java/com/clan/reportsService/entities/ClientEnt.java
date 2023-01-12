@@ -17,37 +17,28 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "employee")
-public class EmployeeEnt {
+@Table(name = "client")
+public class ClientEnt {
     @Serial
     private static final long serialVersionUID = 1L;
 
     @Id
-    @SequenceGenerator(name = "EMPLOYEE_SEQ_GEN", sequenceName = "employee_sequence", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPLOYEE_SEQ_GEN")
+    @SequenceGenerator(name = "CLIENT_SEQ_GEN", sequenceName = "client_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CLIENT_SEQ_GEN")
     private Integer id;
 
-    //ciao
+    @Column(name = "name", nullable = false)
+    private String name;
 
-    @Column(name = "account_id",nullable = false)
-    private String accountId;
-
-    @ManyToOne
-    @JoinColumn(name="team_id",nullable = false)
-    private TeamEnt team;
-
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "client")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ReportEnt> reports;
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "client")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<JobEnt> jobs;
 
-    @Column(name = "is_leader",nullable = false)
-    private Boolean isLeader;
-
-    @Column(name = "creation_date",nullable = false)
+    @Column(name = "creation_date", nullable = false)
     private LocalDate creationDate;
 
     @Column(name = "last_update")

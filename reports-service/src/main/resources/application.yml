@@ -3,7 +3,18 @@ application:
   version: 0.0.1-SNAPSHOT
 
 server:
+  servlet:
+    context-path: /report
   port: 9090
+
+keycloak:
+  realm: idreports
+  auth-server-url: http://localhost:8081
+  resource: springboot-idreports
+  bearer-only: true
+  use-resource-role-mappings: true
+  ssl-required: none
+
 
 spring:
   datasource:
@@ -19,3 +30,4 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
