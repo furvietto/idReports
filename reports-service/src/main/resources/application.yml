@@ -5,16 +5,15 @@ application:
 server:
   servlet:
     context-path: /report
-  port: 9090
+  port: 8080
 
 keycloak:
-  realm: idreports
-  auth-server-url: http://localhost:8081
-  resource: springboot-idreports
-  bearer-only: true
+  realm: idReports
+  auth-server-url: http://localhost:8180/auth
+  ssl-required: external
+  resource: springboot-idreports-backend
   use-resource-role-mappings: true
-  ssl-required: none
-
+  bearer-only: true
 
 spring:
   datasource:

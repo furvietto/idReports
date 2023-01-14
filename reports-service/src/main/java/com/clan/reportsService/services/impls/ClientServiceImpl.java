@@ -5,11 +5,15 @@ import com.clan.reportsService.exceptions.general.AlreadyExisistingException;
 import com.clan.reportsService.exceptions.general.DataNotValidException;
 import com.clan.reportsService.models.client.CreateClientRequest;
 import com.clan.reportsService.models.client.CreateClientResponse;
+import com.clan.reportsService.models.client.GetAllClientResponse;
 import com.clan.reportsService.repository.ClientRepository;
 import com.clan.reportsService.services.ClientService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -36,4 +40,32 @@ public class ClientServiceImpl implements ClientService {
             throw new AlreadyExisistingException("cliente gia esistente");
         }
     }
+
+    @Override
+    public void delete(String name) throws DataNotValidException {
+        if (name == null) {
+            throw new DataNotValidException("dati mancanti");
+        }
+        ClientEnt clientEnt = clientRepository.findByName(name);
+
+        clientRepository.deleteById(clientEnt.getId());
+
+    }
+
+    @Override
+    public List<GetAllClientResponse> getAll() {
+        List<ClientEnt> entities = clientRepository.findAll();
+        List<GetAllClientResponse> response = new ArrayList<>();
+        for (ClientEnt client : entities) {
+            GetAllClientResponse getAll = new GetAllClientResponse();
+            getAll.setId(client.getId());
+            getAll.setName(client.getName());
+            getAll.setCreationDate(client.getCreationDate());
+            getAll.setLastUpdate(client.getLastUpdate());
+            response.add(getAll);
+        }
+        return response;
+    }
+
+
 }
