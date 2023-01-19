@@ -9,29 +9,32 @@ import com.clan.reportsService.models.client.GetAllClientResponse;
 import com.clan.reportsService.repository.ClientRepository;
 import com.clan.reportsService.services.ClientService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
 @Service
-public class ClientServiceImpl implements ClientService {
+public class ClientServiceImpl implements ClientService{
 
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
 
-    @Override
+
     public CreateClientResponse create(CreateClientRequest request) throws AlreadyExisistingException, DataNotValidException {
         if (request.getName() == null || request.getCreationDate() == null) {
             throw new DataNotValidException("dati mancanti");
         }
         if (clientRepository.findByName(request.getName()) == null) {
+            LocalDate creationDate = LocalDate.parse(request.getCreationDate());
             ClientEnt entity = new ClientEnt();
             entity.setName(request.getName());
-            entity.setCreationDate(request.getCreationDate());
-            entity.setLastUpdate(request.getLastUpdate());
+            entity.setCreationDate(creationDate);
             CreateClientResponse response = new CreateClientResponse();
             response.setId(clientRepository.save(entity).getId());
             return response;
@@ -41,7 +44,7 @@ public class ClientServiceImpl implements ClientService {
         }
     }
 
-    @Override
+
     public void delete(String name) throws DataNotValidException {
         if (name == null) {
             throw new DataNotValidException("dati mancanti");
@@ -52,7 +55,7 @@ public class ClientServiceImpl implements ClientService {
 
     }
 
-    @Override
+
     public List<GetAllClientResponse> getAll() {
         List<ClientEnt> entities = clientRepository.findAll();
         List<GetAllClientResponse> response = new ArrayList<>();

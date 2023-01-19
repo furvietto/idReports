@@ -5,23 +5,30 @@ import com.clan.reportsService.exceptions.general.DataNotValidException;
 import com.clan.reportsService.models.client.CreateClientRequest;
 import com.clan.reportsService.models.client.CreateClientResponse;
 import com.clan.reportsService.models.client.GetAllClientResponse;
+import com.clan.reportsService.repository.ClientRepository;
 import com.clan.reportsService.services.ClientService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.List;
 
 @Slf4j
-@AllArgsConstructor
 @RestController
-@RequestMapping("v1/client")
+@AllArgsConstructor
+@CrossOrigin
+@RequestMapping("/v1/client")
 public class ClientController {
 
     private final ClientService clientService;
+
+    private final ClientRepository clientRepository;
 
     @RequestMapping(
             method = RequestMethod.POST,

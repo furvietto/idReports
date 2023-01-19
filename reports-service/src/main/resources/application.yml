@@ -9,11 +9,10 @@ server:
 
 keycloak:
   realm: idReports
-  auth-server-url: http://localhost:8180/auth
+  auth-server-url: http://localhost:8180
   ssl-required: external
-  resource: springboot-idreports-backend
+  resource: idreports_backend
   use-resource-role-mappings: true
-  bearer-only: true
 
 spring:
   datasource:

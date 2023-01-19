@@ -7,6 +7,5 @@ import java.time.LocalDate;
 @Data
 public class CreateClientRequest {
     private String name;
-    private LocalDate creationDate;
-    private LocalDate lastUpdate;
+    private String creationDate;
 }
