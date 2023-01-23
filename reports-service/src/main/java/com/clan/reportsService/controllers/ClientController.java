@@ -28,8 +28,6 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    private final ClientRepository clientRepository;
-
     @RequestMapping(
             method = RequestMethod.POST,
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -92,7 +90,5 @@ public class ClientController {
             return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-
 
 }
