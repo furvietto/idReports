@@ -42,4 +42,36 @@ public class UserController {
         List<ListUsers> users = keycloakService.getAllUsers();
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
+
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/getAllUser/{teamId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    private ResponseEntity<List<ListUsers>> getAllUsersByTeamId(@PathVariable("teamId") Integer idTeam) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(keycloakService.getAllUsersByTeamId(idTeam));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/assignTeamLeader/{accountId}"
+    )
+    public ResponseEntity<ResponseMessage> assignTeamLeader(@PathVariable("accountId") String accountId) {
+    try {
+        return ResponseEntity.status(HttpStatus.OK).body(keycloakService.assignTeamLeader(accountId));
+    }catch (Exception e) {
+        e.printStackTrace();
+        System.out.println(e.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+    }
+
+    }
 }

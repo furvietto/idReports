@@ -18,5 +18,6 @@ public class CreateUser implements Serializable {
     private String firstName;
     private String lastName;
     private String password;
+    private String team;
 
 }

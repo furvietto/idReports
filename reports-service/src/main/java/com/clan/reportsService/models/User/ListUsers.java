@@ -10,8 +10,10 @@ import lombok.NoArgsConstructor;
 public class ListUsers {
 
     private String id;
+    private String accountId;
     private String username;
     private String email;
     private String firstName;
     private String lastName;
+    private boolean isLeader;
 }

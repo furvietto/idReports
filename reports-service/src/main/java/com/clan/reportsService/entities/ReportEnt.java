@@ -31,8 +31,8 @@ public class ReportEnt {
     @Column(name = "title",nullable = false)
     private String title;
 
-    @Column(name = "body_html",nullable = false,columnDefinition = "TEXT")
-    private String text;
+    @Column(name = "body_html",nullable = false)
+    private String bodyHtml;
 
     @Column(name = "status",nullable = false)
     private String status;
@@ -41,14 +41,11 @@ public class ReportEnt {
     private LocalDate sentDate;
 
     @ManyToOne
-    @JoinColumn(name = "client_id",nullable = false)
+    @JoinColumn(name = "client_id")
     private ClientEnt client;
 
     @Column(name = "creation_date",nullable = false)
     private LocalDate creationDate;
-
-    @Column(name = "last_update")
-    private LocalDate lastUpdate;
 
 
 }
