@@ -14,4 +14,5 @@ public interface ClientService {
 
     void delete(String name) throws DataNotValidException;
     List<GetAllClientResponse> getAll();
+    List<GetAllClientResponse> getAllClientByAccountId(String accountId);
 }

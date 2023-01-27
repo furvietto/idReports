@@ -1,11 +1,16 @@
 package com.clan.reportsService.services.keycloak;
 
 import com.clan.reportsService.entities.EmployeeEnt;
+import com.clan.reportsService.entities.ReportEnt;
 import com.clan.reportsService.entities.TeamEnt;
 import com.clan.reportsService.models.User.CreateUser;
+import com.clan.reportsService.models.User.GetAllUsersTeamLeader;
 import com.clan.reportsService.models.User.ListUsers;
 import com.clan.reportsService.models.User.ResponseMessage;
+import com.clan.reportsService.models.report.ReportAdminResponse;
+import com.clan.reportsService.models.report.ReportTeamLeaderResponse;
 import com.clan.reportsService.repository.EmployeeRepository;
+import com.clan.reportsService.repository.ReportRepository;
 import com.clan.reportsService.repository.TeamRepository;
 import lombok.AllArgsConstructor;
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
@@ -35,6 +40,9 @@ public class KeycloakService {
 
     @Autowired
     private EmployeeRepository employeeRepository;
+
+    @Autowired
+    private ReportRepository reportRepository;
 
     @Value("${keycloak.auth-server-url}")
     private String server_url;
@@ -111,6 +119,68 @@ public class KeycloakService {
         return new Object[]{statusId, responseMessage};
     }
 
+    public List<ReportTeamLeaderResponse> listReportTeamLeader(String accountId) {
+        UsersResource usersResource = getUsersResource();
+        List<ReportTeamLeaderResponse> teamLeaderResponses = new ArrayList<>();
+        EmployeeEnt teamLeader = employeeRepository.findByAccountId(accountId);
+
+        for (EmployeeEnt employee : employeeRepository.findAll()) {
+            if (employee.getAccountId() != teamLeader.getAccountId() && employee.getTeam().getId() == teamLeader.getTeam().getId()  ){
+                for (ReportEnt report : employee.getReports()) {
+                    if (report.getStatus().equalsIgnoreCase("SENT")){
+                        ReportTeamLeaderResponse reportTeamLeaderResponse = new ReportTeamLeaderResponse();
+                        reportTeamLeaderResponse.setId(report.getId());
+                        reportTeamLeaderResponse.setTeamName(employee.getTeam().getName());
+                        reportTeamLeaderResponse.setUsername(usersResource.get(report.getEmployee().getAccountId()).toRepresentation().getUsername());
+                        reportTeamLeaderResponse.setTitle(report.getTitle());
+                        reportTeamLeaderResponse.setBodyHtml(report.getBodyHtml());
+                        reportTeamLeaderResponse.setStatus(report.getStatus());
+                        reportTeamLeaderResponse.setCreationDate(report.getCreationDate());
+                        teamLeaderResponses.add(reportTeamLeaderResponse);
+                    }
+                }
+            }
+        }
+
+        return teamLeaderResponses;
+    }
+
+    public List<GetAllUsersTeamLeader> listUsersTeamLeader(String accountId) {
+        UsersResource usersResource = getUsersResource();
+        List<GetAllUsersTeamLeader> getAllUsersTeamLeaderResponse = new ArrayList<>();
+        EmployeeEnt teamLeader = employeeRepository.findByAccountId(accountId);
+
+        for (EmployeeEnt employeeEnt : teamLeader.getTeam().getEmployess()){
+            GetAllUsersTeamLeader getAllUsersTeamLeader = new GetAllUsersTeamLeader();
+            getAllUsersTeamLeader.setUsername(usersResource.get(employeeEnt.getAccountId()).toRepresentation().getUsername());
+            getAllUsersTeamLeader.setTeam(employeeEnt.getTeam().getName());
+            getAllUsersTeamLeaderResponse.add(getAllUsersTeamLeader);
+        }
+
+        return getAllUsersTeamLeaderResponse;
+    }
+
+    public List<ReportAdminResponse> listReportAdmin() {
+        UsersResource usersResource = getUsersResource();
+        List<ReportAdminResponse> reportAdminResponses = new ArrayList<>();
+
+        for (ReportEnt report : reportRepository.findAll()) {
+            if (report.getStatus().equalsIgnoreCase("SENT")) {
+                ReportAdminResponse reportAdminResponse = new ReportAdminResponse();
+                reportAdminResponse.setId(report.getId());
+                reportAdminResponse.setUsername(usersResource.get(report.getEmployee().getAccountId()).toRepresentation().getUsername());
+                reportAdminResponse.setTitle(report.getTitle());
+                reportAdminResponse.setBodyHtml(report.getBodyHtml());
+                reportAdminResponse.setStatus(report.getStatus());
+                reportAdminResponse.setCreationDate(report.getCreationDate());
+
+                reportAdminResponses.add(reportAdminResponse);
+            }
+        }
+
+        return reportAdminResponses;
+    }
+
     public List<ListUsers> getAllUsersByTeamId(Integer idTeam) {
         List<ListUsers> users = new ArrayList<>();
         try {
@@ -141,15 +211,17 @@ public class KeycloakService {
         try {
             UsersResource usersResource = getUsersResource();
             List<UserRepresentation> users = usersResource.list();
-            users.forEach(user -> {
-                ListUsers addUser = new ListUsers();
-                addUser.setId(user.getId());
-                addUser.setUsername(user.getUsername());
-                addUser.setEmail(user.getEmail());
-                addUser.setFirstName(user.getFirstName());
-                addUser.setLastName(user.getLastName());
-                responseListUsers.add(addUser);
-            });
+            for (UserRepresentation user: users) {
+                if (!user.getUsername().equalsIgnoreCase("admin")){
+                    ListUsers addUser = new ListUsers();
+                    addUser.setId(user.getId());
+                    addUser.setUsername(user.getUsername());
+                    addUser.setEmail(user.getEmail());
+                    addUser.setFirstName(user.getFirstName());
+                    addUser.setLastName(user.getLastName());
+                    responseListUsers.add(addUser);
+                }
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

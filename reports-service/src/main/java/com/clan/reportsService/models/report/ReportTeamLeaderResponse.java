@@ -5,10 +5,11 @@ import lombok.Data;
 import java.time.LocalDate;
 
 @Data
-public class GetAllReportResponse {
+public class ReportTeamLeaderResponse {
 
     private Integer id;
-    private String clientName;
+    private String teamName;
+    private String username;
     private String title;
     private String bodyHtml;
     private String status;

@@ -8,6 +8,7 @@ import java.time.LocalDate;
 public class CreateReportRequest {
 
     private String employeeId;
+    private String clientName;
     private String title;
     private String bodyHtml;
     private String status;

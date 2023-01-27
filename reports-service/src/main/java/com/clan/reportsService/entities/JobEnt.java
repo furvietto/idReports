@@ -19,6 +19,28 @@ public class JobEnt {
     @Serial
     private static final long serialVersionUID = 1L;
 
+    @Id
+    @SequenceGenerator(name = "JOB_SEQ_GEN", sequenceName = "job_sequence", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOB_SEQ_GEN")
+    private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "employee_id",nullable = false)
+    private EmployeeEnt employee;
+
+    @ManyToOne
+    @JoinColumn(name = "client_id",nullable = false)
+    private ClientEnt client;
+
+    @Column(name = "creation_date", nullable = false)
+    private LocalDate creationDate;
+
+    @Column(name = "last_update")
+    private LocalDate lastUpdate;
+    /*
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     @EmbeddedId
     @SequenceGenerator(name = "JOB_SEQ_GEN", sequenceName = "job_sequence", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "JOB_SEQ_GEN")
@@ -40,5 +62,7 @@ public class JobEnt {
     @Column(name = "last_update")
     private LocalDate lastUpdate;
 
+
+     */
 
 }

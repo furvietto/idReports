@@ -19,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @CrossOrigin
-@RequestMapping("v1/reports")
+@RequestMapping("v1/report")
 public class ReportController {
 
     private ReportService reportService;

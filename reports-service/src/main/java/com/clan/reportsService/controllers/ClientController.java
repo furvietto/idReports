@@ -71,6 +71,22 @@ public class ClientController {
     }
 
     @RequestMapping(
+            method = RequestMethod.GET,
+            path = "/getAllClient/{accountId}",
+            produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    private ResponseEntity<List<GetAllClientResponse>> getAllClientByAccountId(@PathVariable("accountId") String accountId) {
+        try {
+            return ResponseEntity.status(HttpStatus.OK).body(clientService.getAllClientByAccountId(accountId));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    @RequestMapping(
             method = RequestMethod.DELETE,
             path = "/delete/{name}"
     )

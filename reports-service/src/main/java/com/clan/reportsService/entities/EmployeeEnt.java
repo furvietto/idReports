@@ -28,8 +28,6 @@ public class EmployeeEnt {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "EMPLOYEE_SEQ_GEN")
     private Integer id;
 
-    //ciao
-
     @Column(name = "account_id",nullable = false)
     private String accountId;
 
@@ -38,11 +36,9 @@ public class EmployeeEnt {
     private TeamEnt team;
 
     @OneToMany(mappedBy = "employee")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<ReportEnt> reports;
 
     @OneToMany(mappedBy = "employee")
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<JobEnt> jobs;
 
     @Column(name = "is_leader",nullable = false)

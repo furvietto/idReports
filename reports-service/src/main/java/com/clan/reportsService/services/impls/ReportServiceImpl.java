@@ -1,5 +1,6 @@
 package com.clan.reportsService.services.impls;
 
+import com.clan.reportsService.entities.ClientEnt;
 import com.clan.reportsService.entities.EmployeeEnt;
 import com.clan.reportsService.entities.ReportEnt;
 import com.clan.reportsService.exceptions.general.DataNotValidException;
@@ -7,6 +8,7 @@ import com.clan.reportsService.models.User.ResponseMessage;
 import com.clan.reportsService.models.report.CreateReportRequest;
 import com.clan.reportsService.models.report.GetAllReportResponse;
 import com.clan.reportsService.models.report.ModifyReportRequest;
+import com.clan.reportsService.repository.ClientRepository;
 import com.clan.reportsService.repository.EmployeeRepository;
 import com.clan.reportsService.repository.ReportRepository;
 import com.clan.reportsService.services.ReportService;
@@ -25,6 +27,8 @@ public class ReportServiceImpl implements ReportService {
 
     private final ReportRepository reportRepository;
 
+    private final ClientRepository clientRepository;
+
     private EmployeeRepository employeeRepository;
     @Override
     public ResponseMessage create(CreateReportRequest request) throws DataNotValidException {
@@ -35,12 +39,14 @@ public class ReportServiceImpl implements ReportService {
 
             LocalDate creationDateParse = LocalDate.parse(request.getCreationDate());
             EmployeeEnt employee = employeeRepository.findByAccountId(request.getEmployeeId());
+            ClientEnt clientEnt = clientRepository.findByName(request.getClientName());
             ReportEnt report = new ReportEnt();
             report.setEmployee(employee);
             report.setTitle(request.getTitle());
             report.setBodyHtml(request.getBodyHtml());
             report.setStatus(request.getStatus());
             report.setCreationDate(creationDateParse);
+            report.setClient(clientEnt);
             reportRepository.save(report);
             responseMessage.setMessage("report mandato");
 
@@ -59,6 +65,9 @@ public class ReportServiceImpl implements ReportService {
             getAllReportResponse.setBodyHtml(report.getBodyHtml());
             getAllReportResponse.setStatus(report.getStatus());
             getAllReportResponse.setCreationDate(report.getCreationDate());
+            if(report.getClient() != null) {
+                getAllReportResponse.setClientName(report.getClient().getName());
+            }
             response.add(getAllReportResponse);
         }
         return response;

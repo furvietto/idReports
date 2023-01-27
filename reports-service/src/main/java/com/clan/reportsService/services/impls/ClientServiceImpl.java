@@ -1,12 +1,16 @@
 package com.clan.reportsService.services.impls;
 
 import com.clan.reportsService.entities.ClientEnt;
+import com.clan.reportsService.entities.EmployeeEnt;
+import com.clan.reportsService.entities.JobEnt;
 import com.clan.reportsService.exceptions.general.AlreadyExisistingException;
 import com.clan.reportsService.exceptions.general.DataNotValidException;
 import com.clan.reportsService.models.client.CreateClientRequest;
 import com.clan.reportsService.models.client.CreateClientResponse;
 import com.clan.reportsService.models.client.GetAllClientResponse;
 import com.clan.reportsService.repository.ClientRepository;
+import com.clan.reportsService.repository.EmployeeRepository;
+import com.clan.reportsService.repository.JobRepository;
 import com.clan.reportsService.services.ClientService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +27,11 @@ import java.util.List;
 @Service
 public class ClientServiceImpl implements ClientService{
 
+    private final EmployeeRepository employeeRepository;
+
     private final ClientRepository clientRepository;
+
+    private final JobRepository jobRepository;
 
 
     public CreateClientResponse create(CreateClientRequest request) throws AlreadyExisistingException, DataNotValidException {
@@ -50,9 +58,7 @@ public class ClientServiceImpl implements ClientService{
             throw new DataNotValidException("dati mancanti");
         }
         ClientEnt clientEnt = clientRepository.findByName(name);
-
         clientRepository.deleteById(clientEnt.getId());
-
     }
 
 
@@ -68,6 +74,25 @@ public class ClientServiceImpl implements ClientService{
             response.add(getAll);
         }
         return response;
+    }
+
+    @Override
+    public List<GetAllClientResponse> getAllClientByAccountId(String accountId) {
+        List<GetAllClientResponse> getAllClientResponses = new ArrayList<>();
+        EmployeeEnt employeeEnt = employeeRepository.findByAccountId(accountId);
+        List<JobEnt> jobEnts = jobRepository.findAll();
+
+        for (JobEnt job : jobEnts) {
+            if (job.getEmployee().getAccountId() == employeeEnt.getAccountId()) {
+                GetAllClientResponse getAllClientResponse = new GetAllClientResponse();
+                getAllClientResponse.setId(job.getClient().getId());
+                getAllClientResponse.setName(job.getClient().getName());
+                getAllClientResponse.setCreationDate(job.getClient().getCreationDate());
+                getAllClientResponse.setLastUpdate(job.getClient().getLastUpdate());
+                getAllClientResponses.add(getAllClientResponse);
+            }
+        }
+        return getAllClientResponses;
     }
 
 
